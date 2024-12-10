@@ -37,7 +37,11 @@ fn part1(input: &Input) -> i64 {
     list2.sort();
 
     // sum of absolute differences
-    list1.iter().zip(list2.iter()).map(|(a, b)| (a-b).abs()).sum()
+    list1
+        .iter()
+        .zip(list2.iter())
+        .map(|(a, b)| (a - b).abs())
+        .sum()
 }
 
 fn part2(input: &Input) -> i64 {
