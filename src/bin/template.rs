@@ -13,15 +13,15 @@ fn main() {
 type Input = ();
 
 fn parse(input: &str) -> Input {
-    todo!()
+    ()
 }
 
 fn part1(input: &Input) -> i64 {
-    todo!()
+    0
 }
 
 fn part2(input: &Input) -> i64 {
-    todo!()
+    0
 }
 
 #[cfg(test)]
