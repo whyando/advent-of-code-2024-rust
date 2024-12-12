@@ -39,12 +39,7 @@ fn parse(input: &str) -> Input {
         .collect()
 }
 
-const DIRECTIONS: [(i64, i64); 4] = [
-    (-1, 0),
-    (0, 1),
-    (1, 0),
-    (0, -1),
-];
+const DIRECTIONS: [(i64, i64); 4] = [(-1, 0), (0, 1), (1, 0), (0, -1)];
 
 fn part1(input: &Input) -> i64 {
     let mut x = input.clone();
@@ -96,7 +91,10 @@ fn part1(input: &Input) -> i64 {
     }
 
     // count 'X's
-    let count = x.iter().map(|row| row.iter().filter(|&&c| c == 'X').count()).sum::<usize>();
+    let count = x
+        .iter()
+        .map(|row| row.iter().filter(|&&c| c == 'X').count())
+        .sum::<usize>();
     count as i64
 }
 
@@ -158,7 +156,7 @@ fn part2(input: &Input) -> i64 {
             }
         }
     }
-    count    
+    count
 }
 
 #[cfg(test)]

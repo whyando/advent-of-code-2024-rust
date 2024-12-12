@@ -51,7 +51,10 @@ fn part1(input: &Input) -> i64 {
         for j in 0..input[i].len() {
             let c = input[i][j];
             if c != '.' {
-                antenna.entry(c).or_default().push(Coord { i: i as i64, j: j as i64 });
+                antenna.entry(c).or_default().push(Coord {
+                    i: i as i64,
+                    j: j as i64,
+                });
             }
         }
     }
@@ -60,13 +63,13 @@ fn part1(input: &Input) -> i64 {
         // For each pair of antennaa, check their 2 antinodes
         let n = coords.len();
         for a in 0..n {
-            for b in (a+1)..n {
+            for b in (a + 1)..n {
                 let di = coords[b].i - coords[a].i;
                 let dj = coords[b].j - coords[a].j;
 
                 for k in [-1, 2] {
-                    let i1 = coords[a].i + di*k;
-                    let j1 = coords[a].j + dj*k;
+                    let i1 = coords[a].i + di * k;
+                    let j1 = coords[a].j + dj * k;
                     if 0 <= i1 && i1 < input.len() as i64 && 0 <= j1 && j1 < input[0].len() as i64 {
                         hit[i1 as usize][j1 as usize] = true;
                     }
@@ -96,7 +99,10 @@ fn part2(input: &Input) -> i64 {
         for j in 0..input[i].len() {
             let c = input[i][j];
             if c != '.' {
-                antenna.entry(c).or_default().push(Coord { i: i as i64, j: j as i64 });
+                antenna.entry(c).or_default().push(Coord {
+                    i: i as i64,
+                    j: j as i64,
+                });
             }
         }
     }
@@ -105,28 +111,28 @@ fn part2(input: &Input) -> i64 {
         // For each pair of antennaa, check their 2 antinodes
         let n = coords.len();
         for a in 0..n {
-            for b in (a+1)..n {
+            for b in (a + 1)..n {
                 let di = coords[b].i - coords[a].i;
                 let dj = coords[b].j - coords[a].j;
-   
+
                 for k in 0.. {
-                    let i1 = coords[a].i + di*k;
-                    let j1 = coords[a].j + dj*k;
+                    let i1 = coords[a].i + di * k;
+                    let j1 = coords[a].j + dj * k;
                     if 0 <= i1 && i1 < input.len() as i64 && 0 <= j1 && j1 < input[0].len() as i64 {
                         hit[i1 as usize][j1 as usize] = true;
                     } else {
                         break;
                     }
-                }  
+                }
                 for k in 1.. {
-                    let i1 = coords[a].i - di*k;
-                    let j1 = coords[a].j - dj*k;
+                    let i1 = coords[a].i - di * k;
+                    let j1 = coords[a].j - dj * k;
                     if 0 <= i1 && i1 < input.len() as i64 && 0 <= j1 && j1 < input[0].len() as i64 {
                         hit[i1 as usize][j1 as usize] = true;
                     } else {
                         break;
                     }
-                }              
+                }
             }
         }
     }

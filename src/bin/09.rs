@@ -34,7 +34,10 @@ fn main() {
 type Input = Vec<i64>;
 
 fn parse(input: &str) -> Input {
-    input.chars().map(|c| c.to_digit(10).unwrap() as i64).collect()
+    input
+        .chars()
+        .map(|c| c.to_digit(10).unwrap() as i64)
+        .collect()
 }
 
 fn part1(input: &Input) -> i64 {
@@ -59,7 +62,7 @@ fn part1(input: &Input) -> i64 {
     let mut next_block_id = 0;
     let mut i = 0;
     let mut checksum = 0;
-    loop  {
+    loop {
         if next_block_id >= blocks.len() {
             break;
         }
@@ -70,7 +73,7 @@ fn part1(input: &Input) -> i64 {
             // println!("i:{} = Gap (Block = {})", i, final_block_idx);
 
             checksum += i * final_block_idx as i64;
-            
+
             // Shorten the block by 1
             blocks[final_block_idx].1 -= 1;
             if blocks[final_block_idx].0 >= blocks[final_block_idx].1 {
@@ -111,7 +114,12 @@ fn part2(input: &Input) -> i64 {
             // file block
             let start = i;
             let end = i + c;
-            blocks.push(Block { start, end, next_block_id: None, prev_block_id: None });
+            blocks.push(Block {
+                start,
+                end,
+                next_block_id: None,
+                prev_block_id: None,
+            });
             i += c;
         } else {
             // space block

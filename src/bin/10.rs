@@ -34,21 +34,15 @@ fn parse(input: &str) -> Input {
         .lines()
         .map(|line| {
             line.chars()
-                .map(|c| 
+                .map(|c|
                     // parse c as base 10 digit
-                    c.to_digit(10).unwrap() as i8
-                )
+                    c.to_digit(10).unwrap() as i8)
                 .collect()
         })
         .collect()
 }
 
-const DIRECTIONS: [(i64, i64); 4] = [
-    (-1, 0),
-    (0, 1),
-    (1, 0),
-    (0, -1),
-];
+const DIRECTIONS: [(i64, i64); 4] = [(-1, 0), (0, 1), (1, 0), (0, -1)];
 
 fn bfs(grid: &Input, start_i: usize, start_j: usize) -> i64 {
     let mut state = vec![vec![0; grid[0].len()]; grid.len()];
@@ -74,7 +68,6 @@ fn bfs(grid: &Input, start_i: usize, start_j: usize) -> i64 {
                 }
             }
         }
-        
     }
     num_terminal_nodes
 }
@@ -107,11 +100,10 @@ fn bfs_part2(grid: &Input, start_i: usize, start_j: usize) -> i64 {
                     }
                 }
             }
-        }        
+        }
     }
     num_routes
 }
-
 
 fn part1(input: &Input) -> i64 {
     // Consider each starting point individually
