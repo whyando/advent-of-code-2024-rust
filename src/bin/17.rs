@@ -44,15 +44,19 @@ struct Input {
 fn parse(input: &str) -> Input {
     let mut lines = input.lines();
     let re = Regex::new(r"^Register (\w): (\d+)$").unwrap();
-    let ra = re.captures(lines.next().unwrap()).unwrap()[2].parse().unwrap();
-    let rb = re.captures(lines.next().unwrap()).unwrap()[2].parse().unwrap();
-    let rc = re.captures(lines.next().unwrap()).unwrap()[2].parse().unwrap();
+    let ra = re.captures(lines.next().unwrap()).unwrap()[2]
+        .parse()
+        .unwrap();
+    let rb = re.captures(lines.next().unwrap()).unwrap()[2]
+        .parse()
+        .unwrap();
+    let rc = re.captures(lines.next().unwrap()).unwrap()[2]
+        .parse()
+        .unwrap();
 
     let regex = Regex::new(r"Program: (.+)").unwrap();
     let _ = lines.next();
-    let program = regex
-        .captures(lines.next().unwrap())
-        .unwrap()[1]
+    let program = regex.captures(lines.next().unwrap()).unwrap()[1]
         .split(',')
         .map(|x| x.parse().unwrap())
         .collect();
@@ -176,7 +180,11 @@ fn part1(input: &Input) -> Result {
         // println!();
     }
 
-    let output_str = output.iter().map(|x| x.to_string()).collect::<Vec<String>>().join(",");
+    let output_str = output
+        .iter()
+        .map(|x| x.to_string())
+        .collect::<Vec<String>>()
+        .join(",");
     Result {
         output: output_str,
         out: output,
@@ -233,7 +241,6 @@ fn part2(input: &Input) -> i64 {
     *solutions.iter().min().unwrap()
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -244,9 +251,7 @@ mod tests {
             ra: 2024,
             rb: 0,
             rc: 0,
-            program: vec![
-                0,3,5,4,3,0
-            ],
+            program: vec![0, 3, 5, 4, 3, 0],
         };
         let result = part2(&input);
         assert_eq!(result, 117440);
@@ -279,9 +284,7 @@ mod tests {
             ra: 10,
             rb: 0,
             rc: 0,
-            program: vec![
-                5, 0, 5, 1, 5, 4
-            ],
+            program: vec![5, 0, 5, 1, 5, 4],
         };
         assert_eq!(part1(&input).output, "0,1,2");
     }
@@ -292,13 +295,10 @@ mod tests {
             ra: 2024,
             rb: 0,
             rc: 0,
-            program: vec![
-                0,1,5,4,3,0
-            ],
+            program: vec![0, 1, 5, 4, 3, 0],
         };
         assert_eq!(part1(&input).output, "4,2,5,6,7,7,7,7,3,1,0");
     }
-
 
     #[test]
     fn example_4() {
@@ -306,9 +306,7 @@ mod tests {
             ra: 0,
             rb: 29,
             rc: 0,
-            program: vec![
-                1,7
-            ],
+            program: vec![1, 7],
         };
         assert_eq!(part1(&input).rb, 26);
     }
@@ -319,9 +317,7 @@ mod tests {
             ra: 0,
             rb: 2024,
             rc: 43690,
-            program: vec![
-                4, 0
-            ],
+            program: vec![4, 0],
         };
         let result = part1(&input);
         assert_eq!(result.rb, 44354);

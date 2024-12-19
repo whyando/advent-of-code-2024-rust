@@ -44,11 +44,7 @@ fn parse(input: &str) -> Input {
         .map(|line| line.chars().collect())
         .collect();
     // parse second part as moves
-    let moves = parts[1]
-        .trim()
-        .chars()
-        .filter(|c| *c != '\n')
-        .collect();
+    let moves = parts[1].trim().chars().filter(|c| *c != '\n').collect();
     Input { grid, moves }
 }
 
@@ -67,14 +63,15 @@ fn simple_push(grid: &mut Vec<Vec<char>>, i: &mut i64, j: &mut i64, di: i64, dj:
             '.' => {
                 // empty cell - stop and shift cells
                 for k1 in (1..=k).rev() {
-                    grid[(*i + di * k1) as usize][(*j + dj * k1) as usize] = grid[(*i + di * (k1-1)) as usize][(*j + dj * (k1-1)) as usize];
+                    grid[(*i + di * k1) as usize][(*j + dj * k1) as usize] =
+                        grid[(*i + di * (k1 - 1)) as usize][(*j + dj * (k1 - 1)) as usize];
                 }
                 grid[*i as usize][*j as usize] = '.';
                 *i += di;
                 *j += dj;
-                break
+                break;
             }
-            'O'|'['|']' => {}, // box - continue
+            'O' | '[' | ']' => {} // box - continue
             _ => panic!("invalid cell"),
         }
     }
@@ -123,7 +120,7 @@ fn part1(input: &Input) -> i64 {
     for i in 0..grid.len() {
         for j in 0..grid[0].len() {
             if grid[i][j] == 'O' {
-                sum += i*100 + j;
+                sum += i * 100 + j;
             }
         }
     }
@@ -132,7 +129,7 @@ fn part1(input: &Input) -> i64 {
 
 fn part2(input: &Input) -> i64 {
     // Start by scaling up grid
-    let mut grid = vec![vec![' '; input.grid[0].len()*2]; input.grid.len()];
+    let mut grid = vec![vec![' '; input.grid[0].len() * 2]; input.grid.len()];
     for i in 0..input.grid.len() {
         for j in 0..input.grid[0].len() {
             let new = match input.grid[i][j] {
@@ -142,8 +139,8 @@ fn part2(input: &Input) -> i64 {
                 '@' => "@.",
                 _ => panic!("invalid cell"),
             };
-            grid[i][2*j] = new.chars().nth(0).unwrap();
-            grid[i][2*j+1] = new.chars().nth(1).unwrap();
+            grid[i][2 * j] = new.chars().nth(0).unwrap();
+            grid[i][2 * j + 1] = new.chars().nth(1).unwrap();
         }
     }
 
@@ -170,7 +167,7 @@ fn part2(input: &Input) -> i64 {
             }
         }
         assert_ne!(i, -1);
-        assert_ne!(j, -1);        
+        assert_ne!(j, -1);
 
         if m == &'<' || m == &'>' {
             // Look ahead until we find a wall or edge of the grid
@@ -179,14 +176,14 @@ fn part2(input: &Input) -> i64 {
         }
 
         // Let's just assume that the push suceeds, and revert it if it doesn't
-        let mut grid1 = grid.clone();        
-    
+        let mut grid1 = grid.clone();
+
         // queue of cells to move
         let mut queue = VecDeque::new();
         let mut pushed = vec![vec![false; grid[0].len()]; grid.len()];
         let mut is_failed = false;
         grid1[i as usize][j as usize] = '.';
-        queue.push_back((i+di, j+dj, '@'));
+        queue.push_back((i + di, j + dj, '@'));
 
         while !queue.is_empty() {
             let (i, j, new_content) = queue.pop_front().unwrap();
@@ -209,46 +206,45 @@ fn part2(input: &Input) -> i64 {
                 }
                 '[' => {
                     // then g[i][j] is a box and also g[i][j+1] is a box
-                    assert_eq!(grid[i as usize][j as usize+1], ']');
-                    let left_pushed = pushed[(i+di) as usize][(j+dj) as usize];
-                    let right_pushed = pushed[(i+di) as usize][(j+dj+1) as usize];
+                    assert_eq!(grid[i as usize][j as usize + 1], ']');
+                    let left_pushed = pushed[(i + di) as usize][(j + dj) as usize];
+                    let right_pushed = pushed[(i + di) as usize][(j + dj + 1) as usize];
                     assert_eq!(left_pushed, right_pushed);
                     if !left_pushed {
-                        queue.push_back((i+di, j+dj, '['));
-                        queue.push_back((i+di, j+dj+1, ']'));
-                        if !pushed[i as usize][j as usize+1] {
-                            grid1[i as usize][j as usize+1] = '.';
+                        queue.push_back((i + di, j + dj, '['));
+                        queue.push_back((i + di, j + dj + 1, ']'));
+                        if !pushed[i as usize][j as usize + 1] {
+                            grid1[i as usize][j as usize + 1] = '.';
                         }
-                        pushed[(i+di) as usize][(j+dj) as usize] = true;
-                        pushed[(i+di) as usize][(j+dj+1) as usize] = true;
+                        pushed[(i + di) as usize][(j + dj) as usize] = true;
+                        pushed[(i + di) as usize][(j + dj + 1) as usize] = true;
                     }
                     grid1[i as usize][j as usize] = new_content;
                 }
-                ']'=> {
+                ']' => {
                     // then g[i][j] is a box and also g[i][j-1] is a box
-                    assert_eq!(grid[i as usize][j as usize-1], '[');
-                    let left_pushed = pushed[(i+di) as usize][(j+dj-1) as usize];
-                    let right_pushed = pushed[(i+di) as usize][(j+dj) as usize];
+                    assert_eq!(grid[i as usize][j as usize - 1], '[');
+                    let left_pushed = pushed[(i + di) as usize][(j + dj - 1) as usize];
+                    let right_pushed = pushed[(i + di) as usize][(j + dj) as usize];
                     assert_eq!(left_pushed, right_pushed);
                     if !left_pushed {
-                        queue.push_back((i+di, j+dj, ']'));
-                        queue.push_back((i+di, j+dj-1, '['));
-                        if !pushed[i as usize][j as usize-1] {
-                            grid1[i as usize][j as usize-1] = '.';
+                        queue.push_back((i + di, j + dj, ']'));
+                        queue.push_back((i + di, j + dj - 1, '['));
+                        if !pushed[i as usize][j as usize - 1] {
+                            grid1[i as usize][j as usize - 1] = '.';
                         }
-                        pushed[(i+di) as usize][(j+dj-1) as usize] = true;
-                        pushed[(i+di) as usize][(j+dj) as usize] = true;
+                        pushed[(i + di) as usize][(j + dj - 1) as usize] = true;
+                        pushed[(i + di) as usize][(j + dj) as usize] = true;
                     }
                     grid1[i as usize][j as usize] = new_content;
                 }
                 _ => panic!("invalid cell"),
-            }           
-            
+            }
         }
 
         if !is_failed {
             grid = grid1;
-        }        
+        }
     }
     print_grid(&grid);
 
@@ -256,7 +252,7 @@ fn part2(input: &Input) -> i64 {
     for i in 0..grid.len() {
         for j in 0..grid[0].len() {
             if grid[i][j] == '[' {
-                sum += i*100 + j;
+                sum += i * 100 + j;
             }
         }
     }

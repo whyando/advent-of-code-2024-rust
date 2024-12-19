@@ -25,12 +25,18 @@ struct Input {
     designs: Vec<String>,
 }
 
-
-
 fn parse(input: &str) -> Input {
     let mut lines = input.lines();
-    let available = lines.next().unwrap().split(", ").map(|s| s.to_string()).collect();
-    let designs = lines.filter(|l| !l.is_empty()).map(|l| l.to_string()).collect();
+    let available = lines
+        .next()
+        .unwrap()
+        .split(", ")
+        .map(|s| s.to_string())
+        .collect();
+    let designs = lines
+        .filter(|l| !l.is_empty())
+        .map(|l| l.to_string())
+        .collect();
     Input { available, designs }
 }
 
@@ -38,7 +44,7 @@ fn part1(input: &Input) -> i64 {
     let mut count = 0;
     for design in &input.designs {
         // let x[i] = 1 if the prefix of design[..i] is makeable
-        let mut x = vec![false; design.len()+1];
+        let mut x = vec![false; design.len() + 1];
         x[0] = true;
 
         for i in 1..=design.len() {
@@ -47,13 +53,13 @@ fn part1(input: &Input) -> i64 {
                 if len > i {
                     continue;
                 }
-                if x[i - piece.len()]  {
-                    if piece == &design[(i-len)..i] {
+                if x[i - piece.len()] {
+                    if piece == &design[(i - len)..i] {
                         x[i] = true;
                     }
                 }
             }
-        }         
+        }
         if x[design.len()] {
             count += 1;
         }
@@ -65,7 +71,7 @@ fn part2(input: &Input) -> i64 {
     let mut count = 0;
     for design in &input.designs {
         // let x[i] = 1 if the prefix of design[..i] is makeable
-        let mut x = vec![0; design.len()+1];
+        let mut x = vec![0; design.len() + 1];
         x[0] = 1;
 
         for i in 1..=design.len() {
@@ -74,11 +80,11 @@ fn part2(input: &Input) -> i64 {
                 if len > i {
                     continue;
                 }
-                if piece == &design[(i-len)..i] {
+                if piece == &design[(i - len)..i] {
                     x[i] += x[i - piece.len()];
                 }
             }
-        }     
+        }
         count += x[design.len()];
     }
     count

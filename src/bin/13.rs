@@ -104,15 +104,19 @@ fn part2(input: &Input) -> i64 {
     for machine in input {
         let prize_x = machine.prize.0 + 10000000000000;
         let prize_y = machine.prize.1 + 10000000000000;
-        println!("{}a + {}b = {}",
-            machine.button_a.0, machine.button_b.0, prize_x);
-        println!("{}a + {}b = {}",
-            machine.button_a.1, machine.button_b.1, prize_y);
+        println!(
+            "{}a + {}b = {}",
+            machine.button_a.0, machine.button_b.0, prize_x
+        );
+        println!(
+            "{}a + {}b = {}",
+            machine.button_a.1, machine.button_b.1, prize_y
+        );
 
         let det = machine.button_a.0 * machine.button_b.1 - machine.button_a.1 * machine.button_b.0;
         if det == 0 {
             panic!("det = 0");
-        } 
+        }
         let a_det = prize_x * machine.button_b.1 - prize_y * machine.button_b.0;
         let b_det = machine.button_a.0 * prize_y - machine.button_a.1 * prize_x;
         if a_det % det != 0 || b_det % det != 0 {

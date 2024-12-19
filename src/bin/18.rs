@@ -96,7 +96,7 @@ fn part1(input: &Input, size: usize, skipped_bytes: i64) -> i64 {
         grid = grid1;
         // println!("t = {}", t);
         // print_grid(&grid);
-        if grid[size-1][size-1] == 1 {
+        if grid[size - 1][size - 1] == 1 {
             return t;
         }
     }
@@ -116,7 +116,7 @@ fn path_exists(grid: &Vec<Vec<i64>>) -> bool {
             continue;
         }
         visited[y as usize][x as usize] = true;
-        if x == n-1 && y == n-1 {
+        if x == n - 1 && y == n - 1 {
             return true;
         }
         for (dx, dy) in DIRECTIONS.iter() {

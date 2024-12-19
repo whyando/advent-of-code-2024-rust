@@ -29,10 +29,7 @@ fn main() {
 type Input = Vec<Vec<char>>;
 
 fn parse(input: &str) -> Input {
-    input
-        .lines()
-        .map(|line| line.chars().collect())
-        .collect()
+    input.lines().map(|line| line.chars().collect()).collect()
 }
 
 const DIRECTIONS: [(i64, i64); 4] = [(-1, 0), (0, 1), (1, 0), (0, -1)];
@@ -55,7 +52,7 @@ fn part1(grid: &Input) -> i64 {
             state[start_i][start_j] = 1;
             while let Some((i, j)) = queue.pop_front() {
                 area += 1;
-        
+
                 // Consider edges where the v' = v + 1
                 let mut num_edges = 0;
                 for (di, dj) in DIRECTIONS.iter() {
@@ -75,7 +72,10 @@ fn part1(grid: &Input) -> i64 {
                 }
                 perimeter += 4 - num_edges;
             }
-            println!("{} ({}, {}) -> area: {}, perimeter: {}", grid[start_i][start_j], start_i, start_j, area, perimeter);
+            println!(
+                "{} ({}, {}) -> area: {}, perimeter: {}",
+                grid[start_i][start_j], start_i, start_j, area, perimeter
+            );
             total_price += area * perimeter;
         }
     }
@@ -101,7 +101,7 @@ fn part2(grid: &Input) -> i64 {
             state[start_i][start_j] = 1;
             while let Some((i, j)) = queue.pop_front() {
                 area += 1;
-        
+
                 // Consider edges where the v' = v + 1
                 for (dir, (di, dj)) in DIRECTIONS.iter().enumerate() {
                     let mut is_edge = false;
@@ -121,12 +121,12 @@ fn part2(grid: &Input) -> i64 {
 
                     if !is_edge {
                         // then this is a fence
-                        fence.insert((i as i64 , j as i64, dir));
+                        fence.insert((i as i64, j as i64, dir));
                     }
                 }
             }
             println!("{:?}", fence);
-            
+
             // Now, for each piece of fence, move left and right to see if those are also fences
             let mut checked = BTreeSet::new();
             let mut fence_length = 0;
@@ -137,9 +137,9 @@ fn part2(grid: &Input) -> i64 {
                 fence_length += 1;
                 let left_dir = (dir + 3) % 4;
                 let right_dir = (dir + 1) % 4;
-                
+
                 // LEFT
-                for k in 1..{
+                for k in 1.. {
                     let mut is_also_fence = false;
                     let i1 = i + k * DIRECTIONS[left_dir as usize].0;
                     let j1 = j + k * DIRECTIONS[left_dir as usize].1;
@@ -154,7 +154,7 @@ fn part2(grid: &Input) -> i64 {
                     }
                 }
                 // RIGHT
-                for k in 1..{
+                for k in 1.. {
                     let mut is_also_fence = false;
                     let i1 = i + k * DIRECTIONS[right_dir as usize].0;
                     let j1 = j + k * DIRECTIONS[right_dir as usize].1;
@@ -170,7 +170,10 @@ fn part2(grid: &Input) -> i64 {
                 }
             }
 
-            println!("{} ({}, {}) -> area: {}, fence_length: {}", grid[start_i][start_j], start_i, start_j, area, fence_length);
+            println!(
+                "{} ({}, {}) -> area: {}, fence_length: {}",
+                grid[start_i][start_j], start_i, start_j, area, fence_length
+            );
             total_price += area * fence_length;
         }
     }

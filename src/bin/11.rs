@@ -33,10 +33,7 @@ fn main() {
 type Input = Vec<i64>;
 
 fn parse(input: &str) -> Input {
-    input
-    .split(' ')
-    .map(|line| line.parse().unwrap())
-    .collect()
+    input.split(' ').map(|line| line.parse().unwrap()).collect()
 }
 
 lazy_static::lazy_static!(
@@ -76,7 +73,7 @@ fn f(n: i64, t: i64) -> i64 {
         let mut cache = F_CACHE.lock().unwrap();
         cache.insert((n, t), result);
     }
-    result    
+    result
 }
 
 fn part1(input: &Input) -> i64 {

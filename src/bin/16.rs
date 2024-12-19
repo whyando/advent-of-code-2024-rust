@@ -88,7 +88,6 @@ fn part1(input: &Input) -> i64 {
 }
 
 fn part2(input: &Input) -> i64 {
-
     // Forward dijkstra
     let dist_from_start = {
         let (start_i, start_j) = get_pos(input, 'S');
@@ -126,7 +125,7 @@ fn part2(input: &Input) -> i64 {
         dist
     };
 
-    // Backwards dijkstra    
+    // Backwards dijkstra
     let dist_from_end = {
         let (start_i, start_j) = get_pos(input, 'E');
         let start_dir = 1;
@@ -165,14 +164,19 @@ fn part2(input: &Input) -> i64 {
     let (end_i, end_j) = get_pos(input, 'E');
     let distance = dist_from_start[end_i as usize][end_j as usize][0];
     println!("Distance: {}", distance);
-    assert_eq!(distance, dist_from_end[start_i as usize][start_j as usize][1]);
+    assert_eq!(
+        distance,
+        dist_from_end[start_i as usize][start_j as usize][1]
+    );
 
     let mut count = 0;
     for i in 0..input.len() {
         for j in 0..input[i].len() {
             let mut best_path = false;
             for dir in 0..4 {
-                if dist_from_start[i][j][dir] == std::i64::MAX || dist_from_end[i][j][dir] == std::i64::MAX {
+                if dist_from_start[i][j][dir] == std::i64::MAX
+                    || dist_from_end[i][j][dir] == std::i64::MAX
+                {
                     continue;
                 }
                 if dist_from_start[i][j][dir] + dist_from_end[i][j][dir] == distance {

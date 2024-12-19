@@ -36,7 +36,9 @@ struct Robot {
 type Input = Vec<Robot>;
 
 fn parse(input: &str) -> Input {
-    input.lines().filter(|l| !l.is_empty())
+    input
+        .lines()
+        .filter(|l| !l.is_empty())
         .map(|line| {
             // p=0,4 v=3,-3
             let re = regex::Regex::new(r"^p=(-?\d+),(-?\d+) v=(-?\d+),(-?\d+)$").unwrap();
@@ -47,7 +49,8 @@ fn parse(input: &str) -> Input {
                 vx: caps[3].parse().unwrap(),
                 vy: caps[4].parse().unwrap(),
             }
-    }).collect()
+        })
+        .collect()
 }
 
 fn part1(input: &Input, width: i64, height: i64) -> i64 {
@@ -110,7 +113,7 @@ fn part2(input: &Input, width: i64, height: i64) -> i64 {
             let y = (robot.y + robot.vy * t).rem_euclid(height);
             grid[y as usize][x as usize] += 1;
         }
-        
+
         // count robots in each quadrant
         let mut quadrants = vec![0; 4];
         for y in 0..height {
