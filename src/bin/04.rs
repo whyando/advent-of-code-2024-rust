@@ -1,3 +1,21 @@
+/*
+
+https://adventofcode.com/2024/day/4
+
+part 1:
+pretty easy just check for XMAS from all starting points in each direction
+
+part 2:
+So I just checked for the A in the center with 2 Ms and 2Ss in the diagonals.
+
+in my opinion the following:
+    M.S
+    .A.
+    S.M
+matches the criteria given in the problem but apparently this isn't counted. So then I had to exclude those cases.
+
+*/
+
 fn main() {
     let input = parse(include_str!("../../input/04.txt"));
 

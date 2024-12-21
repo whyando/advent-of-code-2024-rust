@@ -1,3 +1,19 @@
+/*
+
+https://adventofcode.com/2024/day/5
+
+part 1:
+just check if the update is correct
+
+part 2:
+here we just applied a swap if an update was not correct until it was correct. Quite a basic solution but works for this input size.
+O(V^2) maximum swaps and O(V) for the check so this simple solution is O(V^3) in the worst case which is fine for V <= 20
+
+A more sophisticated solution would be to consider the rules as a directed graph and then find a topological ordering on the graph.
+You can do this in O(V + E) by running a DFS and then taking the nodes as they are exited in reverse order.
+
+*/
+
 fn main() {
     let input = parse(include_str!("../../input/05.txt"));
 

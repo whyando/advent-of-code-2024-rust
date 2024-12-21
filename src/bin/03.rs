@@ -1,3 +1,22 @@
+/*
+
+https://adventofcode.com/2024/day/3
+
+part 1:
+just a regex match
+
+part 2:
+not a great solution but I had the same regex iteration then checked backwards for the 'do' and 'dont' strings
+if the 'do' was closer, or neither were found then the mul was active and so included.
+
+I overcomplicated this and did a regex on the reversed string because that was the only way I could think of to find the first match
+in the backwards direction.
+
+A much nicer more 'pure' solution would be to extract the indexes of all mul, do, and don't instructions at the start
+(probably still with regex) and then iterate once through the sorted list of parsed instructions.
+
+*/
+
 fn main() {
     let input = parse(include_str!("../../input/03.txt"));
 

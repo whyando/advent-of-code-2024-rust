@@ -1,3 +1,15 @@
+/*
+
+https://adventofcode.com/2024/day/2
+
+part 1:
+easy to check if a row is safe
+
+part 2:
+for each item in the row, we try removing it and see if the row is safe
+
+*/
+
 fn main() {
     let input = parse(include_str!("../../input/02.txt"));
 

@@ -1,3 +1,15 @@
+/*
+
+https://adventofcode.com/2024/day/1
+
+part 1:
+simple calculation
+
+part 2:
+again simple calculation
+
+*/
+
 use std::collections::BTreeMap;
 
 fn main() {
