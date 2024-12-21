@@ -1,4 +1,4 @@
-use std::collections::{HashMap, VecDeque};
+use std::collections::HashMap;
 
 fn main() {
     let input = parse(include_str!("../../input/21.txt"));
@@ -9,7 +9,7 @@ fn main() {
 
     let part2 = part2(&input);
     println!("Part 2: {}", part2);
-    assert_eq!(part2, 0);
+    assert_eq!(part2, 130470079151124);
 }
 
 type Input = Vec<String>;
@@ -20,170 +20,168 @@ fn parse(input: &str) -> Input {
         .map(|line| line.to_string()).collect()
 }
 
-#[derive(Debug, Clone, Hash, Eq, PartialEq)]
-struct State {
-    dir_keypad_1: char,
-    dir_keypad_2: char,
-    numeric_keypad: char,
-    correct_letters: i64,
-}
-const DIRECTIONAL_KEYPAD: [[char; 3]; 2] = [
-    [' ', '^', 'A'],
-    ['<', 'v', '>'],
-];
+lazy_static::lazy_static! {
+    static ref DIRECTIONAL_KEYPAD: Vec<Vec<char>> = vec![
+        vec![' ', '^', 'A'],
+        vec!['<', 'v', '>'],
+    ];
 
-const NUMERIC_KEYPAD: [[char; 3]; 4] = [
-    ['7', '8', '9'],
-    ['4', '5', '6'],
-    ['1', '2', '3'],
-    [' ', '0', 'A'],
-];
-
-fn numeric_keypad(current: char, action: char) -> Option<char> {
-    let (mut i, mut j) = (-1, -1);
-    for i1 in 0..4 {
-        for j1 in 0..3 {
-            if NUMERIC_KEYPAD[i1][j1] == current {
-                i = i1 as i64;
-                j = j1 as i64;
-            }
-        }
-    }
-    assert!(i != -1 && j != -1);
-    let (di, dj) = match action {
-        '^' => (-1, 0),
-        'v' => (1, 0),
-        '<' => (0, -1),
-        '>' => (0, 1),
-        _ => panic!("Invalid action"),
-    };
-    let (i1, j1) = (i + di, j + dj);
-    if i1 < 0 || i1 >= 4 || j1 < 0 || j1 >= 3 {
-        return None;
-    }
-    let next = NUMERIC_KEYPAD[i1 as usize][j1 as usize];
-    if next == ' ' {
-        return None;
-    }
-    Some(next)
+    static ref NUMERIC_KEYPAD: Vec<Vec<char>> = vec![
+        vec!['7', '8', '9'],
+        vec!['4', '5', '6'],
+        vec!['1', '2', '3'],
+        vec![' ', '0', 'A'],
+    ];
 }
 
-
-fn directional_keypad(current: char, action: char) -> Option<char> {
-    let (mut i, mut j) = (-1, -1);
-    for i1 in 0..2 {
-        for j1 in 0..3 {
-            if DIRECTIONAL_KEYPAD[i1][j1] == current {
-                i = i1 as i64;
-                j = j1 as i64;
+fn keypad_loc(keypad: &Vec<Vec<char>>, c: char) -> (usize, usize) {
+    for i in 0..keypad.len() {
+        for j in 0..keypad[i].len() {
+            if keypad[i][j] == c {
+                return (i, j);
             }
         }
     }
-    assert!(i != -1 && j != -1);
-    let (di, dj) = match action {
-        '^' => (-1, 0),
-        'v' => (1, 0),
-        '<' => (0, -1),
-        '>' => (0, 1),
-        _ => panic!("Invalid action"),
-    };
-    let (i1, j1) = (i + di, j + dj);
-    if i1 < 0 || i1 >= 2 || j1 < 0 || j1 >= 3 {
-        return None;
-    }
-    let next = DIRECTIONAL_KEYPAD[i1 as usize][j1 as usize];
-    if next == ' ' {
-        return None;
-    }
-    Some(next)
+    panic!("Invalid char");
 }
 
-// None if go off the edge, or enter wrong number in the end code
-fn apply_action(s: &State, action_0: char, code: &str) -> Option<State> {
-
-    // Press action 0 on keypad 0 which affects keypad 1
-    if action_0 != 'A' {
-        return match directional_keypad(s.dir_keypad_1, action_0) {
-            Some(next) => {
-                let mut t = s.clone();
-                t.dir_keypad_1 = next;
-                Some(t)
-            }
-            None => None,
-        }        
-    }
-
-    // Press action 1 on keypad 1 which affects keypad 2
-    let action_1 = s.dir_keypad_1;
-    if action_1 != 'A' {
-        return match directional_keypad(s.dir_keypad_2, action_1) {
-            Some(next) => {
-                let mut t = s.clone();
-                t.dir_keypad_2 = next;
-                Some(t)
-            }
-            None => None,
-        }
-    }
-
-    // Press action 2 on keypad 2 which affects numeric keypad
-    let action_2 = s.dir_keypad_2;
-    if action_2 != 'A' {
-        return match numeric_keypad(s.numeric_keypad, action_2) {
-            Some(next) => {
-                let mut t = s.clone();
-                t.numeric_keypad = next;
-                Some(t)
-            }
-            None => None,
-        }
-    }
-
-    // Then the final keypad has been pressed
-    let action_3 = s.numeric_keypad;
-    let target_letter = code.chars().nth(s.correct_letters as usize).unwrap();
-    if action_3 == target_letter {
-        let mut t = s.clone();
-        t.correct_letters += 1;
-        Some(t)
-    } else {
-        None
-    }    
+struct Scope {
+    num_keypads: usize,
+    f_cache: HashMap<(usize, char, char), i64>,
 }
 
-fn solve(code: &str) -> i64 {
-    let start = State {
-        dir_keypad_1: 'A',
-        dir_keypad_2: 'A',
-        numeric_keypad: 'A',
-        correct_letters: 0,
-    };
-
-    let mut queue = VecDeque::new();
-    let mut dist = HashMap::new();
-    queue.push_back((start, 0));
-
-    while let Some((x, d)) = queue.pop_front() {
-        if let Some(&prev_dist) = dist.get(&x) {
-            assert!(d >= prev_dist);
-            continue;
-        }
-        // println!("{} {} {} {} {}", d, x.dir_keypad_1, x.dir_keypad_2, x.numeric_keypad, x.correct_letters);
-        dist.insert(x.clone(), d);
-
-        // Check if terminal state
-        if x.correct_letters == code.len() as i64 {
-            return d;
-        }
-
-        // Consider edge
-        for action in vec!['<', '>', 'v', '^', 'A'] {
-            if let Some(y) = apply_action(&x, action, &code) {
-                queue.push_back((y, d + 1));
-            }
+impl Scope {
+    fn new(num_keypads: usize) -> Self {
+        Self {
+            num_keypads,
+            f_cache: HashMap::new(),
         }
     }
-    panic!("No solution found");
+
+    // Number of (human) presses to move keypad r from char x to char y (and enter y on that keypad)
+    // (robots < r start and end at 'A', and robots > r are unchanged)
+    fn f(&mut self, r: usize, x: char, y: char) -> i64 {
+        if r == 0 {
+            return 1;
+        }
+        if let Some(&res) = self.f_cache.get(&(r, x, y)) {
+            return res;
+        }
+        // println!("f({}, {}, {})", r, x, y);
+        // robot n-1 is at a numeric keypad
+        // rest of the robots are at directional keypads
+    
+        let keypad: &Vec<Vec<char>> = if r == self.num_keypads - 1 {
+            &NUMERIC_KEYPAD
+        } else {
+            &DIRECTIONAL_KEYPAD
+        };
+
+        // consider the 2 candidate routes where we go one direction and then the other, and don't go off the edge
+        let (i_start, j_start) = keypad_loc(keypad, x);
+        let (i_end, j_end) = keypad_loc(keypad, y);
+
+        // i first
+        let mut route1 = vec!['A'];
+        let mut route1_failed = false;
+        {
+            let mut i = i_start;
+            let mut j = j_start;
+            while i != i_end {
+                if i < i_end {
+                    route1.push('v');
+                    i += 1;
+                } else if i > i_end {
+                    route1.push('^');
+                    i -= 1;
+                }
+                if keypad[i as usize][j as usize] == ' ' {
+                    route1_failed = true;
+                }
+            }
+            while j != j_end {
+                if j < j_end {
+                    route1.push('>');
+                    j += 1;
+                } else if j > j_end {
+                    route1.push('<');
+                    j -= 1;
+                }
+                if keypad[i as usize][j as usize] == ' ' {
+                    route1_failed = true;
+                }
+            }
+            route1.push('A');
+        }
+
+        // j first
+        let mut route2 = vec!['A'];
+        let mut route2_failed = false;
+        {
+            let mut i = i_start;
+            let mut j = j_start;
+            while j != j_end {
+                if j < j_end {
+                    route2.push('>');
+                    j += 1;
+                } else if j > j_end {
+                    route2.push('<');
+                    j -= 1;
+                }
+                if keypad[i as usize][j as usize] == ' ' {
+                    route2_failed = true;
+                }
+            }
+            while i != i_end {
+                if i < i_end {
+                    route2.push('v');
+                    i += 1;
+                } else if i > i_end {
+                    route2.push('^');
+                    i -= 1;
+                }
+                if keypad[i as usize][j as usize] == ' ' {
+                    route2_failed = true;
+                }
+            }
+            route2.push('A');
+        }
+
+        let mut min_presses = i64::MAX;
+        if !route1_failed {
+            let mut presses = 0;
+            for i in 0..route1.len() - 1 {
+                presses += self.f(r - 1, route1[i], route1[i + 1]);
+            }
+            min_presses = min_presses.min(presses);
+        }
+        if !route2_failed {
+            let mut presses = 0;
+            for i in 0..route2.len() - 1 {
+                presses += self.f(r - 1, route2[i], route2[i + 1]);
+            }
+            min_presses = min_presses.min(presses);
+        }
+        // println!("routes: {:?}, {:?}, {} {}", route1, route2, route1_failed, route2_failed);
+        assert!(min_presses != i64::MAX); // 1 of the 2 routes must be valid
+    
+        self.f_cache.insert((r, x, y), min_presses);
+        min_presses
+    }
+}
+
+
+
+fn solve(code: &str, num_keypads: usize) -> i64 {
+    let mut presses = 0;
+    let mut pos = 'A';
+    let mut x = Scope::new(num_keypads);
+    for i in 0..code.len() {
+        let next: char = code.chars().nth(i).unwrap();
+        presses += x.f(num_keypads - 1, pos, next);
+        pos = next;
+    }
+    presses
 }
 
 fn part1(input: &Input) -> i64 {
@@ -191,7 +189,7 @@ fn part1(input: &Input) -> i64 {
     for code in input {
         let len = code.len();
         let numeric_part: i64 = code[..len - 1].to_string().parse().unwrap();
-        let dist = solve(&code);
+        let dist = solve(&code, 4);
         println!("{}: {}", code, dist);
         sum += dist * numeric_part;
     }
@@ -199,7 +197,15 @@ fn part1(input: &Input) -> i64 {
 }
 
 fn part2(input: &Input) -> i64 {
-    0
+    let mut sum = 0;
+    for code in input {
+        let len = code.len();
+        let numeric_part: i64 = code[..len - 1].to_string().parse().unwrap();
+        let dist = solve(&code, 27);
+        println!("{}: {}", code, dist);
+        sum += dist * numeric_part;
+    }
+    sum
 }
 
 #[cfg(test)]

@@ -45,19 +45,19 @@ fn parse(input: &str) -> Input {
         .collect()
 }
 
-fn print_grid(grid: &Vec<Vec<i64>>) {
-    for row in grid {
-        for cell in row {
-            match cell {
-                0 => print!("."),
-                1 => print!("O"),
-                2 => print!("#"),
-                _ => panic!("Unknown cell value"),
-            }
-        }
-        println!();
-    }
-}
+// fn print_grid(grid: &Vec<Vec<i64>>) {
+//     for row in grid {
+//         for cell in row {
+//             match cell {
+//                 0 => print!("."),
+//                 1 => print!("O"),
+//                 2 => print!("#"),
+//                 _ => panic!("Unknown cell value"),
+//             }
+//         }
+//         println!();
+//     }
+// }
 
 const DIRECTIONS: [(i64, i64); 4] = [(-1, 0), (0, 1), (1, 0), (0, -1)];
 
