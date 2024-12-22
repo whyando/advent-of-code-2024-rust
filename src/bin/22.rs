@@ -1,4 +1,3 @@
-use std::collections::BTreeMap;
 
 fn main() {
     let input = parse(include_str!("../../input/22.txt"));
@@ -47,60 +46,43 @@ fn part1(input: &Input) -> i64 {
 }
 
 fn part2(input: &Input) -> i64 {
-    let mut changes = vec![vec![0; 2000]; input.len()];
-    let mut first: Vec<BTreeMap<(i64, i64, i64, i64), i64>> = vec![BTreeMap::new(); input.len()];
-    let mut values: Vec<Vec<i64>> = vec![vec![0; 2000]; input.len()];
+    let seq_index_max = 19 * 19 * 19 * 19;
+    let mut seq_sum =  vec![0; seq_index_max];
     for i in 0..input.len() {
+        let mut seen = vec![false; seq_index_max];
         let mut x = input[i];
+        let mut seq = (0, 0, 0, 0);
         for j in 0..2000 {
             let next = next(x);
-            let change = (next % 10) - (x % 10);
-            changes[i][j] = change;
-            values[i][j] = next;
+            let change = ((next % 10) - (x % 10) + 9) as usize; // 0 - 18
+            seq.3 = seq.2;
+            seq.2 = seq.1;
+            seq.1 = seq.0;
+            seq.0 = change;
+            let seq_index = 19 * 19 * 19 * seq.3 + 19 * 19 * seq.2 + 19 * seq.1 + seq.0;
             x = next;
 
             if j >= 3 {
-                let seq = (changes[i][j-3], changes[i][j-2], changes[i][j-1], changes[i][j]);
-                if !first[i].contains_key(&seq) {                    
-                    first[i].insert(seq.clone(), j as i64);
+                if !seen[seq_index] {
+                    seen[seq_index] = true;
+                    let value = x % 10;
+                    seq_sum[seq_index] += value;
                 }
             }
         }
     }
-
-    // now we can test each candidate sequence
     
     let mut best = 0;
-    let mut best_seq = (0,0,0,0);
-    for a in -9..=9 {
-        for b in -9..=9 {
-            if a + b < -9 || a + b > 9 {
-                continue;
-            }
-            for c in -9..=9 {
-                if a + b + c < -9 || a + b + c > 9 {
-                    continue;
-                }
-                for d in -9..=9 {
-                    if a + b + c + d < -9 || a + b + c + d > 9 {
-                        continue;
-                    }
-
-
-                    let seq = (a,b,c,d);
-                    let mut sum = 0;
-                    for i in 0..input.len() {
-                        if let Some(j) = first[i].get(&seq) {
-                            sum += values[i][*j as usize] % 10;
-                        }
-                    }
-
-                    if sum > best {
-                        best = sum;
-                        best_seq = seq;
-                    }
-                }
-            }
+    let mut best_seq = (0, 0, 0, 0);
+    for seq_index in 0..seq_index_max {
+        if seq_sum[seq_index] > best {
+            best = seq_sum[seq_index];
+            best_seq = (
+                (seq_index / (19 * 19 * 19)) as i64 - 9,
+                ((seq_index / (19 * 19)) % 19) as i64 - 9,
+                ((seq_index / 19) % 19) as i64 - 9,
+                (seq_index % 19) as i64 - 9,
+            );
         }
     }
     println!("Best: {} @ {:?}", best, best_seq);
