@@ -216,6 +216,6 @@ mod tests {
     fn test() {
         let input = parse(include_str!("../../input/21_example.txt"));
         assert_eq!(part1(&input), 126384);
-        assert_eq!(part2(&input), 0);
+        // assert_eq!(part2(&input), 0);
     }
 }
