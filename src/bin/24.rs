@@ -12,7 +12,6 @@ fn main() {
     assert_eq!(part2, 0);
 }
 
-
 #[derive(Debug)]
 struct Input {
     wires: BTreeMap<String, bool>,
@@ -45,16 +44,24 @@ fn parse(input: &str) -> Input {
             let operation = captures.get(2).unwrap().as_str();
             let input2 = captures.get(3).unwrap().as_str();
             let output = captures.get(4).unwrap().as_str();
-            (output.to_string(), (input1.to_string(), operation.to_string(), input2.to_string()))
+            (
+                output.to_string(),
+                (
+                    input1.to_string(),
+                    operation.to_string(),
+                    input2.to_string(),
+                ),
+            )
         })
         .collect();
-    Input {
-        wires,
-        gates,
-    }
+    Input { wires, gates }
 }
 
-fn f(wires: &mut BTreeMap<String, bool>, gates: &BTreeMap<String, (String, String, String)>, x: &str) -> bool {
+fn f(
+    wires: &mut BTreeMap<String, bool>,
+    gates: &BTreeMap<String, (String, String, String)>,
+    x: &str,
+) -> bool {
     if let Some(val) = wires.get(x) {
         return *val;
     }
@@ -80,7 +87,12 @@ fn part1(input: &Input) -> i64 {
         let val = f(&mut wires, &input.gates, output);
         if output.chars().nth(0).unwrap() == 'z' {
             // println!("{}: {}", output, val);
-            let index = output.chars().skip(1).collect::<String>().parse::<i64>().unwrap();
+            let index = output
+                .chars()
+                .skip(1)
+                .collect::<String>()
+                .parse::<i64>()
+                .unwrap();
             if val {
                 sum += 1 << index;
             }
@@ -90,7 +102,7 @@ fn part1(input: &Input) -> i64 {
 }
 
 fn f1(
-    reached: &mut BTreeSet<String>, 
+    reached: &mut BTreeSet<String>,
     order: &mut BTreeMap<String, usize>,
     gates: &BTreeMap<String, (String, String, String)>,
     x: &str,
@@ -137,7 +149,7 @@ fn part2(input: &Input) -> i64 {
     for i in 0..=45 {
         println!("z{:02}", i);
         f1(&mut reached, &mut order, &gates, &format!("z{:02}", i), n);
-        
+
         let mut new_gates = vec![];
         for i in 0..order.len() {
             let x = order.iter().find(|(_k, v)| **v == i).unwrap().0;
@@ -153,15 +165,24 @@ fn part2(input: &Input) -> i64 {
         println!();
 
         // analyse:
-        let num_and = new_gates.iter().filter(|(_k, (_i1, op, _i2))| op == "AND").count();
-        let num_or = new_gates.iter().filter(|(_k, (_i1, op, _i2))| op == "OR").count();
-        let num_xor = new_gates.iter().filter(|(_k, (_i1, op, _i2))| op == "XOR").count();
+        let num_and = new_gates
+            .iter()
+            .filter(|(_k, (_i1, op, _i2))| op == "AND")
+            .count();
+        let num_or = new_gates
+            .iter()
+            .filter(|(_k, (_i1, op, _i2))| op == "OR")
+            .count();
+        let num_xor = new_gates
+            .iter()
+            .filter(|(_k, (_i1, op, _i2))| op == "XOR")
+            .count();
         if i >= 2 && i != 45 {
             assert_eq!(num_and, 2);
             assert_eq!(num_or, 1);
             assert_eq!(num_xor, 2);
         }
-    }    
+    }
 
     let mut swaps = vec!["z10", "gpr", "z33", "ghp", "z21", "nks", "krs", "cpm"];
     swaps.sort();

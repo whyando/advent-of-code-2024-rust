@@ -15,9 +15,11 @@ fn main() {
 type Input = Vec<String>;
 
 fn parse(input: &str) -> Input {
-    input.lines()
+    input
+        .lines()
         .filter(|line| !line.is_empty())
-        .map(|line| line.to_string()).collect()
+        .map(|line| line.to_string())
+        .collect()
 }
 
 lazy_static::lazy_static! {
@@ -70,7 +72,7 @@ impl Scope {
         // println!("f({}, {}, {})", r, x, y);
         // robot n-1 is at a numeric keypad
         // rest of the robots are at directional keypads
-    
+
         let keypad: &Vec<Vec<char>> = if r == self.num_keypads - 1 {
             &NUMERIC_KEYPAD
         } else {
@@ -164,13 +166,11 @@ impl Scope {
         }
         // println!("routes: {:?}, {:?}, {} {}", route1, route2, route1_failed, route2_failed);
         assert!(min_presses != i64::MAX); // 1 of the 2 routes must be valid
-    
+
         self.f_cache.insert((r, x, y), min_presses);
         min_presses
     }
 }
-
-
 
 fn solve(code: &str, num_keypads: usize) -> i64 {
     let mut presses = 0;

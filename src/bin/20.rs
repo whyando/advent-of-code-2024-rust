@@ -43,7 +43,7 @@ fn get_pos(input: &Input, c: char) -> (usize, usize) {
 
 const DIRECTIONS: [(i64, i64); 4] = [(-1, 0), (0, 1), (1, 0), (0, -1)];
 
-fn dijkstra(input: &Input, start: (usize, usize)) -> Vec<Vec<i64>> {    
+fn dijkstra(input: &Input, start: (usize, usize)) -> Vec<Vec<i64>> {
     let mut dist = vec![vec![std::i64::MAX; input[0].len()]; input.len()];
     let mut locked = vec![vec![false; input[0].len()]; input.len()];
     let mut queue = std::collections::BinaryHeap::new();
@@ -99,7 +99,8 @@ fn part2(input: &Input, max_cheat_dist: i64, threshold: i64) -> i64 {
                     let y1 = (y as i64 + cheat_y) as usize;
                     if x1 < input[0].len() && y1 < input.len() {
                         if dist[y1][x1] != std::i64::MAX && dist_end[y1][x1] != std::i64::MAX {
-                            let route = dist[y][x] + dist_end[y1][x1] + cheat_x.abs() + cheat_y.abs();
+                            let route =
+                                dist[y][x] + dist_end[y1][x1] + cheat_x.abs() + cheat_y.abs();
                             let saving = time - route;
                             if saving >= threshold {
                                 count += 1;

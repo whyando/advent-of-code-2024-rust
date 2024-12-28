@@ -10,18 +10,19 @@ fn main() {
     assert_eq!(part2, 0);
 }
 
-
 type Input = Vec<Vec<Vec<char>>>;
 
 fn parse(input: &str) -> Input {
-    let i: Input = input.split("\n\n").map(|group| {
-        group.lines().filter(
-            |line| !line.is_empty()
-        ).
-            map(|line| {
-            line.chars().collect()
-        }).collect()
-    }).collect();
+    let i: Input = input
+        .split("\n\n")
+        .map(|group| {
+            group
+                .lines()
+                .filter(|line| !line.is_empty())
+                .map(|line| line.chars().collect())
+                .collect()
+        })
+        .collect();
     for schematic in &i {
         assert_eq!(schematic.len(), 7);
         for line in schematic {
@@ -60,7 +61,7 @@ fn part1(input: &Input) -> i64 {
     }
     // println!("{:?}", locks);
     // println!("{:?}", keys);
-    
+
     let mut count = 0;
     for key in &keys {
         for lock in &locks {

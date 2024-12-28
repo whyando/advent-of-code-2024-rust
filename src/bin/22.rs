@@ -1,4 +1,3 @@
-
 fn main() {
     let input = parse(include_str!("../../input/22.txt"));
 
@@ -47,7 +46,7 @@ fn part1(input: &Input) -> i64 {
 
 fn part2(input: &Input) -> i64 {
     let seq_index_max = 19 * 19 * 19 * 19;
-    let mut seq_sum =  vec![0; seq_index_max];
+    let mut seq_sum = vec![0; seq_index_max];
     for i in 0..input.len() {
         let mut seen = vec![false; seq_index_max];
         let mut x = input[i];
@@ -71,7 +70,7 @@ fn part2(input: &Input) -> i64 {
             }
         }
     }
-    
+
     let mut best = 0;
     let mut best_seq = (0, 0, 0, 0);
     for seq_index in 0..seq_index_max {

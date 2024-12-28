@@ -41,12 +41,12 @@ fn part1(input: &Input) -> i64 {
         edges.insert((a, b));
         edges.insert((b, a));
     }
-    
+
     let mut results = BTreeSet::new();
     for (&k, v) in adj.iter() {
         if k.chars().nth(0).unwrap() == 't' {
             for i in 0..v.len() {
-                for j in i+1..v.len() {
+                for j in i + 1..v.len() {
                     if edges.contains(&(v[i], v[j])) {
                         // println!("{} {} {}", k, v[i], v[j]);
                         // sort
@@ -56,7 +56,6 @@ fn part1(input: &Input) -> i64 {
                     }
                 }
             }
-
         }
     }
     // results.iter().for_each(|v| println!("{:?}", v));
@@ -94,11 +93,11 @@ fn part2(input: &Input) -> String {
     for i in 0..count {
         groups.push(vec![i]);
     }
-    for group_sz in 2..{
+    for group_sz in 2.. {
         let mut groups1 = vec![];
         for group in &groups {
-            let last = group[group_sz-2];
-            for i in last+1..count {
+            let last = group[group_sz - 2];
+            for i in last + 1..count {
                 if group.iter().all(|&j| matrix[i][j]) {
                     let mut new_group = group.clone();
                     new_group.push(i);
@@ -114,7 +113,10 @@ fn part2(input: &Input) -> String {
     }
 
     let group = groups.get(0).unwrap();
-    let mut group = group.iter().map(|&i| map_rev[&i].clone()).collect::<Vec<_>>();
+    let mut group = group
+        .iter()
+        .map(|&i| map_rev[&i].clone())
+        .collect::<Vec<_>>();
     group.sort();
     group.join(",")
 }
